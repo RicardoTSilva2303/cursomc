@@ -1,5 +1,6 @@
 package com.ricardosilva.cursomc;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,20 @@ import com.ricardosilva.cursomc.domain.Cidade;
 import com.ricardosilva.cursomc.domain.Cliente;
 import com.ricardosilva.cursomc.domain.Endereco;
 import com.ricardosilva.cursomc.domain.Estado;
+import com.ricardosilva.cursomc.domain.Pagamento;
+import com.ricardosilva.cursomc.domain.PagamentoComBoleto;
+import com.ricardosilva.cursomc.domain.PagamentoComCartao;
+import com.ricardosilva.cursomc.domain.Pedido;
 import com.ricardosilva.cursomc.domain.Produto;
+import com.ricardosilva.cursomc.domain.enums.EstadoPagamento;
 import com.ricardosilva.cursomc.domain.enums.TipoCliente;
 import com.ricardosilva.cursomc.repositories.CategoriaRepository;
 import com.ricardosilva.cursomc.repositories.CidadeRepository;
 import com.ricardosilva.cursomc.repositories.ClienteRepository;
 import com.ricardosilva.cursomc.repositories.EnderecoRepository;
 import com.ricardosilva.cursomc.repositories.EstadoRepository;
+import com.ricardosilva.cursomc.repositories.PagamentoRepository;
+import com.ricardosilva.cursomc.repositories.PedidoRepository;
 import com.ricardosilva.cursomc.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -35,7 +43,11 @@ public class CursomcApplication implements CommandLineRunner {
 	@Autowired
 	private ClienteRepository clienteRepository;
 	@Autowired
-	private EnderecoRepository enderecoRepository;		
+	private EnderecoRepository enderecoRepository;	
+	@Autowired
+	private PedidoRepository pedidoRepository;
+	@Autowired
+	private PagamentoRepository pagamentoRepository;		
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -75,6 +87,8 @@ public class CursomcApplication implements CommandLineRunner {
 		estadoRepository.saveAll(Arrays.asList(est1,est2));
 		cidadeRepository.saveAll(Arrays.asList(c1,c2,c3));
 		
+		//************************************************
+		
 		Cliente cli1 = new Cliente(null, "Maria Silva", "maria@gmail.com", "36378912377", TipoCliente.PESSOAFISICA);
 		
 		cli1.getTelefones().addAll(Arrays.asList("33392577","31253642"));
@@ -87,7 +101,25 @@ public class CursomcApplication implements CommandLineRunner {
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepository.saveAll(Arrays.asList(e1,e2));
 
+		// ***********************************************
 		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		Pedido ped1 = new Pedido(null, sdf.parse("20/04/2021 16:42"), cli1, e1);
+		Pedido ped2 = new Pedido(null, sdf.parse("20/04/2021 17:09"), cli1, e2);
+		
+		Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		ped1.setPagamento(pagto1);
+		
+		Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, 
+				sdf.parse("19/04/2021 00:00:00"),null);
+		ped2.setPagamento(pagto2);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1,ped2));
+		
+		pedidoRepository.saveAll(Arrays.asList(ped1,ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
+				
 	}
 
 }
