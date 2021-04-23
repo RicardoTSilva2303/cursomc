@@ -1,6 +1,5 @@
 package com.ricardosilva.cursomc.services;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,7 +55,7 @@ public class ClienteService {
 		try {
 			repo.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Não é possível excluir um cliente que possui referencias!");
+			throw new DataIntegrityException("Não é possível excluir o cliente porque há pedidos relacionados!");
 		}
 	}
 	
