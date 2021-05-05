@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ricardosilva.cursomc.domain.Cidade;
@@ -16,6 +17,7 @@ import com.ricardosilva.cursomc.domain.Endereco;
 import com.ricardosilva.cursomc.domain.enums.TipoCliente;
 import com.ricardosilva.cursomc.dto.ClienteDTO;
 import com.ricardosilva.cursomc.dto.ClienteNewDTO;
+import com.ricardosilva.cursomc.repositories.CidadeRepository;
 import com.ricardosilva.cursomc.repositories.ClienteRepository;
 import com.ricardosilva.cursomc.repositories.EnderecoRepository;
 import com.ricardosilva.cursomc.services.exceptions.DataIntegrityException;
@@ -30,6 +32,9 @@ public class ClienteService {
 	
 	@Autowired
 	private EnderecoRepository enderecoRepository;	
+	
+	@Autowired
+	private BCryptPasswordEncoder pe;
 	
 	public Cliente find(Integer id) {
 		Optional<Cliente> obj = repo.findById(id); 
@@ -69,7 +74,7 @@ public class ClienteService {
 	}
 	
 	public Cliente fromDTO(ClienteDTO objDto) {
-		return new Cliente(objDto.getId(), objDto.getNome(), objDto.getEmail(), null, null);
+		return new Cliente(objDto.getId(), objDto.getNome(), objDto.getEmail(), null, null, null);
 	}
 	
 	public Cliente fromDTO(ClienteNewDTO objDto) {
@@ -77,7 +82,8 @@ public class ClienteService {
 				                  objDto.getNome(), 
 				                  objDto.getEmail(), 
 				                  objDto.getCpfOuCnpj(), 
-				                  TipoCliente.toEnum(objDto.getTipo()));
+				                  TipoCliente.toEnum(objDto.getTipo()),
+				                  pe.encode(objDto.getSenha()));
 		
 		Cidade cid = new Cidade(objDto.getCidadeId(), null, null);
 		
