@@ -16,12 +16,13 @@ public class MockEmailSercice extends AbstractEmailService {
 		LOG.info(msg.toString());
 		LOG.info("E-mail enviado!");
 	}
-
+	
+	/*
 	@Override
 	public void sendHtmlEmail(MimeMessage msg) {
 		LOG.info("Simulando o envio de e-mail HTML...");
 		LOG.info(msg.toString());
 		LOG.info("E-mail enviado!");
 	}
-
+	*/
 }

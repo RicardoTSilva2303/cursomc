@@ -17,28 +17,27 @@ import com.ricardosilva.cursomc.services.AuthService;
 import com.ricardosilva.cursomc.services.UserService;
 
 @RestController
-@RequestMapping(value="/auth")
+@RequestMapping(value = "/auth")
 public class AuthResource {
-	
+
 	@Autowired
 	private JWTUtil jwtUtil;
 	
 	@Autowired
 	private AuthService service;
 	
-	@RequestMapping(value="/refresh_token", method=RequestMethod.POST)
+	@RequestMapping(value = "/refresh_token", method = RequestMethod.POST)
 	public ResponseEntity<Void> refreshToken(HttpServletResponse response) {
 		UserSS user = UserService.authenticated();
 		String token = jwtUtil.generateToken(user.getUsername());
 		response.addHeader("Authorization", "Bearer " + token);
+		response.addHeader("access-control-expose-headers", "Authorization");
 		return ResponseEntity.noContent().build();
 	}
 	
-	
-	@RequestMapping(value="/forgot", method=RequestMethod.POST)
-	public ResponseEntity<Void> forgot(@Valid @RequestBody EmailDTO emailDTO) {
-		service.sendNewPassword(emailDTO.getEmail());
+	@RequestMapping(value = "/forgot", method = RequestMethod.POST)
+	public ResponseEntity<Void> forgot(@Valid @RequestBody EmailDTO objDto) {
+		service.sendNewPassword(objDto.getEmail());
 		return ResponseEntity.noContent().build();
-	}	
-
+	}
 }

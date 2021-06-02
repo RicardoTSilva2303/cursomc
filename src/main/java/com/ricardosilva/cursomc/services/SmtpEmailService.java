@@ -26,11 +26,13 @@ public class SmtpEmailService extends AbstractEmailService {
 		LOG.info("E-mail enviado!");
 	}
 
+	/*
 	@Override
 	public void sendHtmlEmail(MimeMessage msg) {
 		LOG.info("Enviando e-mail HTLM...");
 		javaMailSender.send(msg);
 		LOG.info("E-mail enviado!");
 	}
+	*/
 
 }
